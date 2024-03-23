@@ -7,7 +7,7 @@
 <meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="http://example.com/uploads/%E5%A4%A7%E9%A0%AD%E7%85%A7.jpg">
 <meta property="article:published_time" content="2024-03-23T04:17:45.000Z">
-<meta property="article:modified_time" content="2024-03-23T04:24:30.027Z">
+<meta property="article:modified_time" content="2024-03-23T04:29:01.091Z">
 <meta property="article:author" content="陳諾霖(Lorrin)">
 <meta property="article:tag" content="Computer Vision">
 <meta name="twitter:card" content="summary">
@@ -56,7 +56,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2024-03-23 12:24:30'
+  postUpdate: '2024-03-23 12:29:01'
 }</script><script>(win=>{
       win.saveToLocal = {
         set: (key, value, ttl) => {
@@ -153,14 +153,14 @@
         }
       }
       detectApple()
-    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/uploads/%E5%A4%A7%E9%A0%AD%E7%85%A7.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Hexo"><span class="site-name">Hexo</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">YOLOv7 (上) - 教你如何直接偵測圖片</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-03-23T04:17:45.000Z" title="Created 2024-03-23 12:17:45">2024-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-03-23T04:24:30.027Z" title="Updated 2024-03-23 12:24:30">2024-03-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="YOLOv7 (上) - 教你如何直接偵測圖片"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>假如在一項專案中，前端會有各式各樣的照片，例如會出現車、報價單、大頭貼等等，而茉莉花同學主要是想關注在有車的照片上並剔除雜訊，想知道有什麼方法可以判斷出哪些照片可以使用。因此我們想到可以使用物件偵測模型，用此方法可以做到照片分類的需求，也能計算出車子占照片的比例。</p>
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/uploads/%E5%A4%A7%E9%A0%AD%E7%85%A7.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Hexo"><span class="site-name">Hexo</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">YOLOv7 (上) - 教你如何直接偵測圖片</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-03-23T04:17:45.000Z" title="Created 2024-03-23 12:17:45">2024-03-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-03-23T04:29:01.091Z" title="Updated 2024-03-23 12:29:01">2024-03-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="YOLOv7 (上) - 教你如何直接偵測圖片"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>假如在一項專案中，前端會有各式各樣的照片，例如會出現車、報價單、大頭貼等等，而茉莉花同學主要是想關注在有車的照片上並剔除雜訊，想知道有什麼方法可以判斷出哪些照片可以使用。因此我們想到可以使用物件偵測模型，用此方法可以做到照片分類的需求，也能計算出車子占照片的比例。</p>
 <p>YOLO物件偵測，簡單來說，就是一種讓電腦能夠快速地識別出一張圖片中的物體和它們的位置的技術。YOLO的全名是”You Only Look Once”，意思是電腦只需要看一眼圖片，就能完成物件的影像辨識和定位。</p>
 <p>（科普小時間：YOLO的另一個全名是”You Only Live Once”，意思是人生只活一次，鼓勵人們即使冒著生命危險也要享受人生。）</p>
 <h1 id="偵測結果"><a href="#偵測結果" class="headerlink" title="偵測結果"></a>偵測結果</h1><p>我們直接使用YOLOv7官方訓練好的權重來偵測圖片，總共偵測出4 persons, 1 bicycle, 4 cars, 1 truck, 1 handbag, 2 surfboards, 3 bottles, 2 chairs, 1 dining table, 1 cell phone</p>
 <img src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/result1.png" class="">
 
 <h1 id="YOLO使用步驟"><a href="#YOLO使用步驟" class="headerlink" title="YOLO使用步驟"></a>YOLO使用步驟</h1><h2 id="1-下載yolov7並安裝相關套件"><a href="#1-下載yolov7並安裝相關套件" class="headerlink" title="1. 下載yolov7並安裝相關套件"></a>1. 下載yolov7並安裝相關套件</h2><p>可參考 <a target="_blank" rel="noopener" href="https://github.com/WongKinYiu/yolov7">https://github.com/WongKinYiu/yolov7</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">!git clone https://github.com/WongKinYiu/yolov7</span><br><span class="line">%cd yolov7</span><br><span class="line">!pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">!git clone https://github.com/WongKinYiu/yolov7</span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash"><span class="built_in">cd</span> yolov7</span></span><br><span class="line">!pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
 
 <p>下載完後的資料夾會有這麼多東西，在下面我有列出一些比較重要的資料夾及文件的用處</p>
 <img src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/result2.png" class="">
@@ -176,7 +176,7 @@
 <li>train.py：用於開啟訓練的腳本</li>
 </ul>
 <h2 id="2-下載權重"><a href="#2-下載權重" class="headerlink" title="2. 下載權重"></a>2. 下載權重</h2><p><a target="_blank" rel="noopener" href="https://github.com/WongKinYiu/yolov7/releases">https://github.com/WongKinYiu/yolov7/releases</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!wget https://github.com/WongKinYiu/yolov7/releases/download/v0<span class="number">.1</span>/yolov7.pt</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt</span><br></pre></td></tr></table></figure>
 
 <h2 id="3-執行圖像偵測"><a href="#3-執行圖像偵測" class="headerlink" title="3. 執行圖像偵測"></a>3. 執行圖像偵測</h2><blockquote>
 <p>偵測常用參數</p>
@@ -193,7 +193,7 @@
 <blockquote>
 <p>使用detect.py執行物件偵測，執行方式如下，偵測結果如最上方的圖</p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不特別選擇classes</span></span><br><span class="line">!python detect.py --weights yolov7.pt --source picture_test/testtest.jpg --save-txt --save-conf --name 不特別選擇classes</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不特別選擇classes</span></span><br><span class="line">!python detect.py --weights yolov7.pt --source picture_test/testtest.jpg --save-txt --save-conf --name 不特別選擇classes</span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p>可以在data&#x2F;coco.yaml裡看到有哪些類別(共有80項)</p>
@@ -203,7 +203,7 @@
 <blockquote>
 <p>如果我們不想要偵測出這麼多東西，只想要特定的類別(person, car)，需在參數classes指定類別編號<br>總共偵測出4 persons, 4 cars</p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 選擇classes</span></span><br><span class="line">!python detect.py --weights yolov7.pt --source picture_test/testtest.jpg --save-txt --save-conf --classes <span class="number">0</span> <span class="number">2</span> --name 選擇classes</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">選擇classes</span></span><br><span class="line">!python detect.py --weights yolov7.pt --source picture_test/testtest.jpg --save-txt --save-conf --classes 0 2 --name 選擇classes</span><br></pre></td></tr></table></figure>
 
 <img src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/result3.png" class="">
 
@@ -304,11 +304,15 @@
 <table>
 <thead>
 <tr>
-<th>0</th>
-<th>0.019787</th>
+<th></th>
+<th>偵測物件佔圖像占比</th>
 </tr>
 </thead>
 <tbody><tr>
+<td>0</td>
+<td>0.019787</td>
+</tr>
+<tr>
 <td>1</td>
 <td>0.005051</td>
 </tr>
