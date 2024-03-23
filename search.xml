@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>YOLOv7 (上) - 教你如何直接偵測圖片</title>
+    <url>/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>假如在一項專案中，前端會有各式各樣的照片，例如會出現車、報價單、大頭貼等等，而茉莉花同學主要是想關注在有車的照片上並剔除雜訊，想知道有什麼方法可以判斷出哪些照片可以使用。因此我們想到可以使用物件偵測模型，用此方法可以做到照片分類的需求，也能計算出車子占照片的比例。</p>
+<p>YOLO物件偵測，簡單來說，就是一種讓電腦能夠快速地識別出一張圖片中的物體和它們的位置的技術。YOLO的全名是”You Only Look Once”，意思是電腦只需要看一眼圖片，就能完成物件的影像辨識和定位。</p>
+<p>（科普小時間：YOLO的另一個全名是”You Only Live Once”，意思是人生只活一次，鼓勵人們即使冒著生命危險也要享受人生。）</p>
+<h1 id="偵測結果"><a href="#偵測結果" class="headerlink" title="偵測結果"></a>偵測結果</h1><p>我們直接使用YOLOv7官方訓練好的權重來偵測圖片，總共偵測出4 persons, 1 bicycle, 4 cars, 1 truck, 1 handbag, 2 surfboards, 3 bottles, 2 chairs, 1 dining table, 1 cell phone</p>
+<img src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/result1.png" class="">
+
+<h1 id="YOLO使用步驟"><a href="#YOLO使用步驟" class="headerlink" title="YOLO使用步驟"></a>YOLO使用步驟</h1><h2 id="1-下載yolov7並安裝相關套件"><a href="#1-下載yolov7並安裝相關套件" class="headerlink" title="1. 下載yolov7並安裝相關套件"></a>1. 下載yolov7並安裝相關套件</h2><p>可參考 <a href="https://github.com/WongKinYiu/yolov7">https://github.com/WongKinYiu/yolov7</a></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!git clone https://github.com/WongKinYiu/yolov7</span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash"><span class="built_in">cd</span> yolov7</span></span><br><span class="line">!pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<p>下載完後的資料夾會有這麼多東西，在下面我有列出一些比較重要的資料夾及文件的用處</p>
+<img src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/result2.png" class="">
+
+<ul>
+<li>cfg：存放訓練所需的網路結構yaml文件</li>
+<li>data：存放訓練過程中超參數與訓練相關data的yaml文件</li>
+<li>models：存放的是定義網路結構的相關python檔案和匯出模型部署所需的程式碼</li>
+<li>runs：存放訓練和測試的權重文件和相關信息</li>
+<li>utils：存放一些程式碼運行中必備的程式碼</li>
+<li>detect.py：用於偵測及測試的腳本</li>
+<li>requirement.txt：訓練與測試所需下載的函式庫</li>
+<li>train.py：用於開啟訓練的腳本</li>
+</ul>
+<h2 id="2-下載權重"><a href="#2-下載權重" class="headerlink" title="2. 下載權重"></a>2. 下載權重</h2><p><a href="https://github.com/WongKinYiu/yolov7/releases">https://github.com/WongKinYiu/yolov7/releases</a></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">!wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-執行圖像偵測"><a href="#3-執行圖像偵測" class="headerlink" title="3. 執行圖像偵測"></a>3. 執行圖像偵測</h2><blockquote>
+<p>偵測常用參數</p>
+</blockquote>
+<ul>
+<li>weights: 權重設置</li>
+<li>source: 欲偵測的圖像路徑</li>
+<li>save-txt: 儲存偵測結果至txt</li>
+<li>save-conf: 儲存可信度至txt</li>
+<li>classes: 指定偵測yaml裡的類別</li>
+<li>name: 保存項目名</li>
+<li>conf-thres: 可信度閥值(預設為0.25)</li>
+</ul>
+<blockquote>
+<p>使用detect.py執行物件偵測，執行方式如下，偵測結果如最上方的圖</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不特別選擇classes</span></span><br><span class="line">!python detect.py --weights yolov7.pt --source picture_test/testtest.jpg --save-txt --save-conf --name 不特別選擇classes</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以在data&#x2F;coco.yaml裡看到有哪些類別(共有80項)</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># number of classes</span></span><br><span class="line"><span class="attr">nc:</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># class names</span></span><br><span class="line"><span class="attr">names:</span> [ <span class="string">&#x27;person&#x27;</span>, <span class="string">&#x27;bicycle&#x27;</span>, <span class="string">&#x27;car&#x27;</span>, <span class="string">&#x27;motorcycle&#x27;</span>, <span class="string">&#x27;airplane&#x27;</span>, <span class="string">&#x27;bus&#x27;</span>, <span class="string">&#x27;train&#x27;</span>, <span class="string">&#x27;truck&#x27;</span>, <span class="string">&#x27;boat&#x27;</span>, <span class="string">&#x27;traffic light&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;fire hydrant&#x27;</span>, <span class="string">&#x27;stop sign&#x27;</span>, <span class="string">&#x27;parking meter&#x27;</span>, <span class="string">&#x27;bench&#x27;</span>, <span class="string">&#x27;bird&#x27;</span>, <span class="string">&#x27;cat&#x27;</span>, <span class="string">&#x27;dog&#x27;</span>, <span class="string">&#x27;horse&#x27;</span>, <span class="string">&#x27;sheep&#x27;</span>, <span class="string">&#x27;cow&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;elephant&#x27;</span>, <span class="string">&#x27;bear&#x27;</span>, <span class="string">&#x27;zebra&#x27;</span>, <span class="string">&#x27;giraffe&#x27;</span>, <span class="string">&#x27;backpack&#x27;</span>, <span class="string">&#x27;umbrella&#x27;</span>, <span class="string">&#x27;handbag&#x27;</span>, <span class="string">&#x27;tie&#x27;</span>, <span class="string">&#x27;suitcase&#x27;</span>, <span class="string">&#x27;frisbee&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;skis&#x27;</span>, <span class="string">&#x27;snowboard&#x27;</span>, <span class="string">&#x27;sports ball&#x27;</span>, <span class="string">&#x27;kite&#x27;</span>, <span class="string">&#x27;baseball bat&#x27;</span>, <span class="string">&#x27;baseball glove&#x27;</span>, <span class="string">&#x27;skateboard&#x27;</span>, <span class="string">&#x27;surfboard&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;tennis racket&#x27;</span>, <span class="string">&#x27;bottle&#x27;</span>, <span class="string">&#x27;wine glass&#x27;</span>, <span class="string">&#x27;cup&#x27;</span>, <span class="string">&#x27;fork&#x27;</span>, <span class="string">&#x27;knife&#x27;</span>, <span class="string">&#x27;spoon&#x27;</span>, <span class="string">&#x27;bowl&#x27;</span>, <span class="string">&#x27;banana&#x27;</span>, <span class="string">&#x27;apple&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;sandwich&#x27;</span>, <span class="string">&#x27;orange&#x27;</span>, <span class="string">&#x27;broccoli&#x27;</span>, <span class="string">&#x27;carrot&#x27;</span>, <span class="string">&#x27;hot dog&#x27;</span>, <span class="string">&#x27;pizza&#x27;</span>, <span class="string">&#x27;donut&#x27;</span>, <span class="string">&#x27;cake&#x27;</span>, <span class="string">&#x27;chair&#x27;</span>, <span class="string">&#x27;couch&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;potted plant&#x27;</span>, <span class="string">&#x27;bed&#x27;</span>, <span class="string">&#x27;dining table&#x27;</span>, <span class="string">&#x27;toilet&#x27;</span>, <span class="string">&#x27;tv&#x27;</span>, <span class="string">&#x27;laptop&#x27;</span>, <span class="string">&#x27;mouse&#x27;</span>, <span class="string">&#x27;remote&#x27;</span>, <span class="string">&#x27;keyboard&#x27;</span>, <span class="string">&#x27;cell phone&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;microwave&#x27;</span>, <span class="string">&#x27;oven&#x27;</span>, <span class="string">&#x27;toaster&#x27;</span>, <span class="string">&#x27;sink&#x27;</span>, <span class="string">&#x27;refrigerator&#x27;</span>, <span class="string">&#x27;book&#x27;</span>, <span class="string">&#x27;clock&#x27;</span>, <span class="string">&#x27;vase&#x27;</span>, <span class="string">&#x27;scissors&#x27;</span>, <span class="string">&#x27;teddy bear&#x27;</span>,</span><br><span class="line">         <span class="string">&#x27;hair drier&#x27;</span>, <span class="string">&#x27;toothbrush&#x27;</span> ]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果我們不想要偵測出這麼多東西，只想要特定的類別(person, car)，需在參數classes指定類別編號<br>總共偵測出4 persons, 4 cars</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">選擇classes</span></span><br><span class="line">!python detect.py --weights yolov7.pt --source picture_test/testtest.jpg --save-txt --save-conf --classes 0 2 --name 選擇classes</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/result3.png" class="">
+
+<h2 id="4-結果判讀"><a href="#4-結果判讀" class="headerlink" title="4. 結果判讀"></a>4. 結果判讀</h2><blockquote>
+<p>我們在執行detect.py時有額外加上兩個參數，分別是 save-txt 以及 save-conf，這兩個參數會將同一張圖片的偵測結果及可信度儲存至txt裡面，路徑為 runs&#x2F;detect&#x2F;你保存項目名稱&#x2F;labels&#x2F;圖片名.txt</p>
+</blockquote>
+<blockquote>
+<p>輸出的偵測結果由左至右分別是<br>類別、偵測框中心所在x軸座標、偵測框中心所在y軸座標、偵測框寬度比例、偵測框高度比例、可信度</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>0.691667</td>
+<td>0.449107</td>
+<td>0.061905</td>
+<td>0.319643</td>
+<td>0.476698</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>0.901190</td>
+<td>0.518750</td>
+<td>0.085714</td>
+<td>0.058929</td>
+<td>0.503899</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>0.095238</td>
+<td>0.485714</td>
+<td>0.040476</td>
+<td>0.082143</td>
+<td>0.516117</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2</td>
+<td>0.967262</td>
+<td>0.531250</td>
+<td>0.065476</td>
+<td>0.155357</td>
+<td>0.686354</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2</td>
+<td>0.814881</td>
+<td>0.516964</td>
+<td>0.055952</td>
+<td>0.083929</td>
+<td>0.755525</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0</td>
+<td>0.754762</td>
+<td>0.558036</td>
+<td>0.121429</td>
+<td>0.712500</td>
+<td>0.928456</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0</td>
+<td>0.652381</td>
+<td>0.589286</td>
+<td>0.114286</td>
+<td>0.689286</td>
+<td>0.937159</td>
+</tr>
+<tr>
+<td>7</td>
+<td>2</td>
+<td>0.377381</td>
+<td>0.607143</td>
+<td>0.530952</td>
+<td>0.475000</td>
+<td>0.943151</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>將 偵測框寬度比例 乘上 偵測框高度比例 即為偵測物件佔圖像占比</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>偵測物件佔圖像占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0.019787</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0.005051</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.003325</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.010172</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.004696</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.086518</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0.078776</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0.252202</td>
+</tr>
+</tbody></table>
+]]></content>
+      <tags>
+        <tag>Computer Vision</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的第一篇文章 By Hexo</title>
+    <url>/2024/03/22/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0-By-Hexo/</url>
+    <content><![CDATA[<h1 id="我的第一篇文章的標題"><a href="#我的第一篇文章的標題" class="headerlink" title="我的第一篇文章的標題"></a>我的第一篇文章的標題</h1><p>hihihi ~ 你好～ 😍 我是第一篇文章的內容～<br>在這裏可以用 <code>Markdown</code> 語法撰寫喔～</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Hello World!&#x27;</span>);</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+</search>
