@@ -1,0 +1,306 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>YOLOv7 (下) - 訓練自己的圖片集 | 酪梨</title><meta name="author" content="酪梨(Lorrin)"><meta name="copyright" content="酪梨(Lorrin)"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="前言我們上次學會了怎麼使用預設的YOLOv7設置來偵測圖片，但各位同學一定會有「阿可是我想偵測我自己想要的東西欸，我才不想用預設的」的想法。 小樺同學就是抱有這個想法，所以直接買了一個攝像頭擺在家門口，想在房間裡就能夠知道說，等一下進家門的是爸爸、媽媽、還是其他人。 而茉莉花同學則發現說，預設的YOLOv7沒有辦法正確判斷出她想要的車車照片。 基於這些想法，我們這次來看看如何訓練自己的圖片集，並偵">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YOLOv7 (下) - 訓練自己的圖片集">
+<meta property="og:url" content="http://example.com/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/index.html">
+<meta property="og:site_name" content="酪梨">
+<meta property="og:description" content="前言我們上次學會了怎麼使用預設的YOLOv7設置來偵測圖片，但各位同學一定會有「阿可是我想偵測我自己想要的東西欸，我才不想用預設的」的想法。 小樺同學就是抱有這個想法，所以直接買了一個攝像頭擺在家門口，想在房間裡就能夠知道說，等一下進家門的是爸爸、媽媽、還是其他人。 而茉莉花同學則發現說，預設的YOLOv7沒有辦法正確判斷出她想要的車車照片。 基於這些想法，我們這次來看看如何訓練自己的圖片集，並偵">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://example.com/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/top_img.png">
+<meta property="article:published_time" content="2024-03-24T02:15:30.000Z">
+<meta property="article:modified_time" content="2024-03-24T14:32:08.823Z">
+<meta property="article:author" content="酪梨(Lorrin)">
+<meta property="article:tag" content="YOLO">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/top_img.png"><link rel="shortcut icon" href="/uploads/%E9%85%AA%E6%A2%A8%E5%9C%96%E6%A8%99.png"><link rel="canonical" href="http://example.com/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '載入更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'YOLOv7 (下) - 訓練自己的圖片集',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-24 22:32:08'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/uploads/%E5%A4%A7%E9%A0%AD%E7%85%A7.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/top_img.png')"><nav id="nav"><span id="blog-info"><a href="/" title="酪梨"><span class="site-name">酪梨</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">YOLOv7 (下) - 訓練自己的圖片集</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2024-03-24T02:15:30.000Z" title="發表於 2024-03-24 10:15:30">2024-03-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2024-03-24T14:32:08.823Z" title="更新於 2024-03-24 22:32:08">2024-03-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%9B%BB%E8%85%A6%E8%A6%96%E8%A6%BA/">電腦視覺</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="YOLOv7 (下) - 訓練自己的圖片集"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我們上次學會了怎麼使用預設的YOLOv7設置來偵測圖片，但各位同學一定會有「阿可是我想偵測我自己想要的東西欸，我才不想用預設的」的想法。</p>
+<p>小樺同學就是抱有這個想法，所以直接買了一個攝像頭擺在家門口，想在房間裡就能夠知道說，等一下進家門的是爸爸、媽媽、還是其他人。</p>
+<p>而茉莉花同學則發現說，預設的YOLOv7沒有辦法正確判斷出她想要的車車照片。</p>
+<p>基於這些想法，我們這次來看看如何訓練自己的圖片集，並偵測出自己想要的酷東西。</p>
+<h1 id="不囉嗦，直接先看範例結果"><a href="#不囉嗦，直接先看範例結果" class="headerlink" title="不囉嗦，直接先看範例結果"></a>不囉嗦，直接先看範例結果</h1><p>以下訓練資料皆來自<a target="_blank" rel="noopener" href="https://public.roboflow.com/">robow公開資料集</a></p>
+<ol>
+<li><p>有無戴口罩(2 classes)</p>
+ <img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result1.png" class="">
+
+ <img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result2.png" class="">
+</li>
+<li><p>找出文件上的手寫簽名(1 class)</p>
+ <img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result3.png" class="">
+
+ <img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result4.png" class=""></li>
+</ol>
+<h1 id="所以該怎麼訓練呢？"><a href="#所以該怎麼訓練呢？" class="headerlink" title="所以該怎麼訓練呢？"></a>所以該怎麼訓練呢？</h1><h2 id="1-下載YOLOv7並安裝相關套件"><a href="#1-下載YOLOv7並安裝相關套件" class="headerlink" title="1. 下載YOLOv7並安裝相關套件"></a>1. 下載YOLOv7並安裝相關套件</h2><blockquote>
+<p>可參考 <a target="_blank" rel="noopener" href="https://github.com/WongKinYiu/yolov7">https://github.com/WongKinYiu/yolov7</a></p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">!git clone https://github.com/WongKinYiu/yolov7</span><br><span class="line"><span class="meta prompt_">%</span><span class="language-bash"><span class="built_in">cd</span> yolov7</span></span><br><span class="line">!pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>下載完後的資料夾會有這麼多東西，在下面我有列出一些比較重要的資料夾及文件的用處</p>
+</blockquote>
+<img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result5.png" class="">
+
+<ul>
+<li>cfg：存放訓練所需的網路結構yaml文件</li>
+<li>data：存放訓練過程中超參數與訓練相關data的yaml文件</li>
+<li>models：存放的是定義網路結構的相關python檔案和匯出模型部署所需的程式碼</li>
+<li>runs：存放訓練和測試的權重文件和相關信息</li>
+<li>utils：存放一些程式碼運行中必備的程式碼</li>
+<li>detect.py：用於偵測及測試的腳本</li>
+<li>requirement.txt：訓練與測試所需下載的函式庫</li>
+<li>train.py：用於開啟訓練的腳本</li>
+</ul>
+<h2 id="2-準備yolo格式數據集"><a href="#2-準備yolo格式數據集" class="headerlink" title="2. 準備yolo格式數據集"></a>2. 準備yolo格式數據集</h2><blockquote>
+<p>當你有了自己準備的圖片後，我們必須在圖片裡框出你想要的東西(aka 圖片標註)，然後將這些圖片以及標註好的結果變成yolo格式，至於怎麼標註及該用什麼工具我們留到下次說~<br>YOLOv7模型的輸入需要使用符合yolo格式的數據集，那什麼是yolo格式?長什麼樣呢?<br>下面這兩張圖就是yolo格式的結構，每一張圖片(.jpg&#x2F;.png&#x2F;…等等)都會對應到一個相同檔名的文字檔(.txt)，而文字檔裡面就是我們標註的內容。</p>
+</blockquote>
+<img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result6.png" class="">
+
+<img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result7.png" class="">
+
+<blockquote>
+<p>標註的內容會有5個值，由左至右分別代表：類別、偵測框中心所在x軸座標、偵測框中心所在y軸座標、偵測框寬度比例、偵測框高度比例。<br>下面為示意圖，左邊的帥哥有戴口罩，所以標註內容第一個數字為1(類別)，後面為偵測框的訊息(我們將口罩框出來的位置及大小)。<br>而右邊的情侶也都有口罩，若一張圖片內有多個想標註的物品，則在標註檔(.txt)內往下新增及可，順序不影響。</p>
+</blockquote>
+<img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result8.png" class="">
+
+<img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result9.png" class="">
+
+<img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result10.png" class="">
+
+<img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result11.png" class="">
+
+<blockquote>
+<p>這邊強烈建議將這份yolo格式數據集放到YOLOv7檔案夾底下，因為放在其他地方時，當模型在抓取路徑時可能會有權限的問題。<br>有了符合這樣的yolo格式數據集後，我們就可以利用這數據集來訓練出自己想要的內容。</p>
+</blockquote>
+<h2 id="3-下載訓練權重"><a href="#3-下載訓練權重" class="headerlink" title="3. 下載訓練權重"></a>3. 下載訓練權重</h2><blockquote>
+<p>這邊使用的訓練權重是yolov7_training.pt，更多可參考 <a target="_blank" rel="noopener" href="https://github.com/WongKinYiu/yolov7/releases">YOLOv7 inference code</a></p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7_training.pt</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>我們上次直接偵測圖片時使用的是yolov7.pt，他是已經完全訓練好的權重檔，適合直接用於物件檢測，無需進行額外的訓練；<br>而yolov7_training.pt是專門為了fine-tune或從頭開始訓練而設計的，使用yolov7_training.pt可以對自己的數據集進行訓練。</p>
+</blockquote>
+<h2 id="4-新增2個yaml文件"><a href="#4-新增2個yaml文件" class="headerlink" title="4. 新增2個yaml文件"></a>4. 新增2個yaml文件</h2><ol>
+<li><p>原地複製貼上<code>data</code>資料夾裡的coco.yaml並更名，舉例：mask.yaml</p>
+<ol>
+<li><p>將1~6行註記或刪除，他這裡是下載coco的圖片集，但我們不需要</p>
+</li>
+<li><p>更改train、val路徑，分別為：<code>yolov7/yolo格式數據集/train/images</code>、<code>yolov7/yolo格式數據集/valid/images</code></p>
+<blockquote>
+<p>這裡放的皆是圖片(.jpg)的路徑，模型會吃這些路徑的圖片來做訓練及驗證，可能有些同學會問說那那些標註的檔案(.txt)不用放嗎?<br> 當模型在訓練時，它會自動尋找與每個圖片(.jpg)同名的標註檔(.txt)來獲取標註資訊，如果找不到該圖片(.jpg)所對應的標註檔(.txt)，該圖片將被忽略或是導致錯誤。</p>
+</blockquote>
+</li>
+<li><p>test可有可無</p>
+</li>
+<li><p>更改nc為你圖片標記的類別數</p>
+</li>
+<li><p>更改names為你圖片標記的類別名</p>
+</li>
+</ol>
+ <img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result12.png" class="">
+</li>
+<li><p>原地複製貼上<code>cfg/training</code>資料夾裡的yolov7.yaml並更名，舉例：yolov7_mask.yaml</p>
+<ol>
+<li>更改nc為你圖片標記的類別數</li>
+</ol>
+ <img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result13.png" class=""></li>
+</ol>
+<h2 id="5-開始訓練"><a href="#5-開始訓練" class="headerlink" title="5. 開始訓練"></a>5. 開始訓練</h2><blockquote>
+<p>註：在YOLOv7中並沒有提供早停(early stopping)的機制，需要的話需自行改寫。<br>early stopping：如果模型在持續訓練了n個epoch後效果未能提升，就讓模型提早停止訓練。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!python train.py --weights yolov7_training.pt --data data/mask.yaml --cfg cfg/training/yolov7_mask.yaml --epochs 100 --name 你的保存項目名稱_訓練</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>下圖為開始訓練時的樣子，我們稍微介紹幾個出現在上面但可能沒見過的指標。更詳細的內容請參考最下方的「可參考的網站-2」。<br>box：偵測框的loss平均值，越小代表偵測框越準<br>obj：目標偵測的loss平均值，越小代表目標偵測越準<br>cls：分類的loss平均值越小代表分類越準。若為1類則cls會為0</p>
+</blockquote>
+<img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/result14.png" class="">
+
+<blockquote>
+<p>訓練常用參數</p>
+</blockquote>
+<ul>
+<li>weights：權重設置</li>
+<li>data：測試資料來源</li>
+<li>epochs：訓練輪數(預設300)</li>
+<li>bach-size：bach大小(預設16)</li>
+<li>name：保存項目名稱，訓練完後會保存在<code>runs/train</code>底下</li>
+</ul>
+<blockquote>
+<p>訓練時，可以透過tensorboard視覺化模型的權重或loss的趨勢等等來判斷模型訓練得好不好。步驟：</p>
+</blockquote>
+<ol>
+<li>將目錄切換至 <code>runs/train/你的保存項目名稱_訓練</code></li>
+<li>執行指令 <code>tensorboard --logdir runs/train</code></li>
+<li>使用瀏覽器瀏覽 <code>http://localhost:6006/</code></li>
+</ol>
+<h2 id="6-圖片偵測"><a href="#6-圖片偵測" class="headerlink" title="6. 圖片偵測"></a>6. 圖片偵測</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!python detect.py --weights runs/train/你的保存項目名稱_訓練weights/best.pt --source 剛剛roboflow載的圖片集/test/images --save-txt --save-conf --conf-thres 0.07 --name 你的保存項目名稱_偵測</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>偵測常用參數</p>
+</blockquote>
+<ul>
+<li>weights：權重設置</li>
+<li>source：欲偵測的圖片路徑</li>
+<li>save-txt：儲存偵測結果至txt</li>
+<li>save-conf：儲存可信度至txt</li>
+<li>classes：指定偵測yaml裡的類別</li>
+<li>conf-thres：可信度閥值(預設為0.25)</li>
+<li>name：保存項目名，偵測完後會保存在<code>runs/detect</code>底下</li>
+</ul>
+<blockquote>
+<p>通常這裡使用的weights為best.pt，訓練過後模型預設會保存以下權重</p>
+</blockquote>
+<ul>
+<li>best.pt: 訓練過程中在驗證集上表現最好的權重</li>
+<li>last.pt: 最後一個epoch訓練的權重</li>
+<li>預設每25個epoch會儲存一次權重</li>
+<li>預設最後5個epoch皆會儲存權重</li>
+</ul>
+<h1 id="可參考的網站"><a href="#可參考的網站" class="headerlink" title="可參考的網站"></a>可參考的網站</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/609775144">手把手調參最新YOLOv7模型推理部分 - 最新版本（一）</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/u012254599/article/details/128443417">YOLOv7模型訓練结果分析以及如何評估YOLOv7模型訓練的效果</a></li>
+</ol>
+<h1 id="題外話"><a href="#題外話" class="headerlink" title="題外話"></a>題外話</h1><blockquote>
+<p>現在中研院團隊已經發表了最新版本YOLOv9，有興趣的朋朋可以看看這篇報導</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.ithome.com.tw/news/161569">AI趨勢周報第245期：YOLOv9來了！2大巧思克服深度學習資訊損失難題 | iThome</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">酪梨(Lorrin)</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章連結: </span><span class="post-copyright-info"><a href="http://example.com/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/">http://example.com/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="http://example.com" target="_blank">酪梨</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/YOLO/">YOLO</a><a class="post-meta__tags" href="/tags/Python/">Python</a></div><div class="post_share"><div class="social-share" data-image="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/top_img.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/" title="YOLOv7 (上) - 教你如何直接偵測圖片"><img class="cover" src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/top_img.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">YOLOv7 (上) - 教你如何直接偵測圖片</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相關推薦</span></div><div class="relatedPosts-list"><div><a href="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/" title="YOLOv7 (上) - 教你如何直接偵測圖片"><img class="cover" src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/top_img.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-23</div><div class="title">YOLOv7 (上) - 教你如何直接偵測圖片</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/uploads/%E5%A4%A7%E9%A0%AD%E7%85%A7.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">酪梨(Lorrin)</div><div class="author-info__description">第一天當資料科學家的小嫩嫩</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/nlchen510"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/nlchen510" target="_blank" title="Github"><i class="fab fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:lorrinchen0510@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #hdhfbb;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">因為平時太健忘，所以這裡是我日常工作和學習時整理的一些紀錄及總結，希望能對大家還有自己有幫助~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E5%9B%89%E5%97%A6%EF%BC%8C%E7%9B%B4%E6%8E%A5%E5%85%88%E7%9C%8B%E7%AF%84%E4%BE%8B%E7%B5%90%E6%9E%9C"><span class="toc-number">2.</span> <span class="toc-text">不囉嗦，直接先看範例結果</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%89%80%E4%BB%A5%E8%A9%B2%E6%80%8E%E9%BA%BC%E8%A8%93%E7%B7%B4%E5%91%A2%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">所以該怎麼訓練呢？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%8B%E8%BC%89YOLOv7%E4%B8%A6%E5%AE%89%E8%A3%9D%E7%9B%B8%E9%97%9C%E5%A5%97%E4%BB%B6"><span class="toc-number">3.1.</span> <span class="toc-text">1. 下載YOLOv7並安裝相關套件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%BA%96%E5%82%99yolo%E6%A0%BC%E5%BC%8F%E6%95%B8%E6%93%9A%E9%9B%86"><span class="toc-number">3.2.</span> <span class="toc-text">2. 準備yolo格式數據集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%B8%8B%E8%BC%89%E8%A8%93%E7%B7%B4%E6%AC%8A%E9%87%8D"><span class="toc-number">3.3.</span> <span class="toc-text">3. 下載訓練權重</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%96%B0%E5%A2%9E2%E5%80%8Byaml%E6%96%87%E4%BB%B6"><span class="toc-number">3.4.</span> <span class="toc-text">4. 新增2個yaml文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E9%96%8B%E5%A7%8B%E8%A8%93%E7%B7%B4"><span class="toc-number">3.5.</span> <span class="toc-text">5. 開始訓練</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%9C%96%E7%89%87%E5%81%B5%E6%B8%AC"><span class="toc-number">3.6.</span> <span class="toc-text">6. 圖片偵測</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%AF%E5%8F%83%E8%80%83%E7%9A%84%E7%B6%B2%E7%AB%99"><span class="toc-number">4.</span> <span class="toc-text">可參考的網站</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A1%8C%E5%A4%96%E8%A9%B1"><span class="toc-number">5.</span> <span class="toc-text">題外話</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/" title="YOLOv7 (下) - 訓練自己的圖片集"><img src="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/top_img.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="YOLOv7 (下) - 訓練自己的圖片集"/></a><div class="content"><a class="title" href="/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/" title="YOLOv7 (下) - 訓練自己的圖片集">YOLOv7 (下) - 訓練自己的圖片集</a><time datetime="2024-03-24T02:15:30.000Z" title="發表於 2024-03-24 10:15:30">2024-03-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/" title="YOLOv7 (上) - 教你如何直接偵測圖片"><img src="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/top_img.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="YOLOv7 (上) - 教你如何直接偵測圖片"/></a><div class="content"><a class="title" href="/2024/03/23/YOLOv7%20(%E4%B8%8A)%20-%20%E6%95%99%E4%BD%A0%E5%A6%82%E4%BD%95%E7%9B%B4%E6%8E%A5%E5%81%B5%E6%B8%AC%E5%9C%96%E7%89%87/" title="YOLOv7 (上) - 教你如何直接偵測圖片">YOLOv7 (上) - 教你如何直接偵測圖片</a><time datetime="2024-03-23T04:17:45.000Z" title="發表於 2024-03-23 12:17:45">2024-03-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By 酪梨(Lorrin)</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主題 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="返回頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
