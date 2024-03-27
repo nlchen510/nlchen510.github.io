@@ -201,6 +201,78 @@
       </tags>
   </entry>
   <entry>
+    <title>使用 Anaconda 進行 Tensorflow 環境安裝流程（Windows 系統，以 tf 2.5 版為例）</title>
+    <url>/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在 Tensorflow 中想要利用 GPU 來達到加速，必須安裝對應版本的 Python、Tensorflow-gpu、CUDA ToolKit、cuDNN。<code>(必須安裝 tensorflow-gpu 才能用 GPU 跑，若安裝 tensorflow 只能用 CPU 跑)</code></p>
+<p>在開始前我們要先確保我們有安裝 Anaconda 及 Visual Studio Code，教學中會使用到這兩個東西。</p>
+<h1 id="正式開始"><a href="#正式開始" class="headerlink" title="正式開始"></a>正式開始</h1><h2 id="安裝-Nvidia-驅動程式"><a href="#安裝-Nvidia-驅動程式" class="headerlink" title="安裝 Nvidia 驅動程式"></a>安裝 Nvidia 驅動程式</h2><p>首先我們需要安裝 Nvidia 驅動程式 <a href="https://www.nvidia.com.tw/Download/index.aspx?lang=tw">官方驅動程式 | NVIDIA</a> (選擇你顯卡的版本)，並記下驅動程式的版本。</p>
+<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result1.png" class="">
+
+<h2 id="查看-cuDNN、CUDA與tensorflow-版本關係"><a href="#查看-cuDNN、CUDA與tensorflow-版本關係" class="headerlink" title="查看 cuDNN、CUDA與tensorflow 版本關係"></a>查看 cuDNN、CUDA與tensorflow 版本關係</h2><p>接著我們要查看<a href="https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html">CUDA ToolKit 對應驅動程式版本</a>，可看到我們驅動程式版本幾乎可安裝 CUDA ToolKit 所有的版本。</p>
+<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result2.png" class="">
+
+<p>再來去查看<a href="https://www.tensorflow.org/install/source_windows">cuDNN、CUDA 與 tensorflow 版本關係</a>，我們想安裝 tensorflow 2.5 版，Python 版本必須為3.6-3.9，cuDNN 版本要8.1以上，CUDA ToolKit 版本要11.2以上。</p>
+<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result3.png" class="">
+
+<h2 id="建立虛擬環境"><a href="#建立虛擬環境" class="headerlink" title="建立虛擬環境"></a>建立虛擬環境</h2><p>有了這些資訊後，我們可以先去 Anaconda 建立一個虛擬環境。</p>
+<p>打開 Anaconda Prompt，輸入指令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda create --name tf2.5 python=3.9 anaconda --yes</span><br></pre></td></tr></table></figure>
+
+<p>建好後可確認是否成功建立</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda env list</span><br></pre></td></tr></table></figure>
+
+<h2 id="安裝-tensorflow-gpu"><a href="#安裝-tensorflow-gpu" class="headerlink" title="安裝 tensorflow-gpu"></a>安裝 tensorflow-gpu</h2><img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result4.png" class="">
+
+<p>接下來要切換到剛建立好的虛擬環境</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda activate tf2.5</span><br></pre></td></tr></table></figure>
+
+<p>若成功切換環境，前面會有 <code>(tf2.5)</code> 的字樣</p>
+<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result5.png" class="">
+
+<p>接著在 tf2.5 的環境下安裝 Tensorflow 2.5 版本</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install tensorflow-gpu=2.5</span><br></pre></td></tr></table></figure>
+
+<p>安裝好後，可確認是否有安裝成功</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda list</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result6.png" class="">
+
+<p>由於 Anaconda 會順便把相依的 package 一起安裝，所以往上拉可以看到 CUDA ToolKit 及 cuDNN 也會一起安裝好</p>
+<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result7.png" class="">
+
+<p>若發現 Anaconda 沒有一起安裝好 CUDA ToolKit 及 cuDNN，可從對照表找到對應版本並自行安裝，以下為示範。</p>
+<ul>
+<li><p>於 tf2.5 環境輸入指令來安裝 CUDA ToolKit</p>
+  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install cudatoolkit=11.2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>於 tf2.5 環境輸入指令來安裝 cuDNN</p>
+  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install cudnn</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="測試安裝是否成功"><a href="#測試安裝是否成功" class="headerlink" title="測試安裝是否成功"></a>測試安裝是否成功</h2><p>皆安裝好後可於 Visual Studio Code 開啟 jupyter 測試是否能找到 GPU 裝置。有兩種方法：</p>
+<ol>
+<li><p>輸入以下指令，若成功抓到 GPU 則會回傳一個 list，若失敗則回傳空的 list</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.config.list_physical_devices(<span class="string">&#x27;GPU&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+ <img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result8.png" class="">
+</li>
+<li><p>輸入以下指令，若成功則會顯示下圖</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.python.client <span class="keyword">import</span> device_lib</span><br><span class="line"><span class="built_in">print</span>(device_lib.list_local_devices())</span><br></pre></td></tr></table></figure>
+
+ <img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result9.png" class="">
+
+<h1 id="題外話"><a href="#題外話" class="headerlink" title="題外話"></a>題外話</h1><p> 當在做深度學習時，運行程式的當下，可打開 <code>cmd</code> 輸入 <code>nvidia-smi</code> 來確認 GPU 的使用情況。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Tensorflow</category>
+      </categories>
+      <tags>
+        <tag>Tensorflow</tag>
+        <tag>Anaconda</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>YOLOv7 (下) - 訓練自己的圖片集</title>
     <url>/2024/03/24/YOLOv7%20(%E4%B8%8B)%20-%20%E8%A8%93%E7%B7%B4%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9C%96%E7%89%87%E9%9B%86/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我們上次學會了怎麼使用預設的YOLOv7設置來偵測圖片，但各位同學一定會有「阿可是我想偵測我自己想要的東西欸，我才不想用預設的」的想法。</p>
@@ -359,78 +431,6 @@
       <tags>
         <tag>YOLO</tag>
         <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 Anaconda 進行 Tensorflow 環境安裝流程（Windows 系統，以 tf 2.5 版為例）</title>
-    <url>/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在 Tensorflow 中想要利用 GPU 來達到加速，必須安裝對應版本的 Python、Tensorflow-gpu、CUDA ToolKit、cuDNN。<code>(必須安裝 tensorflow-gpu 才能用 GPU 跑，若安裝 tensorflow 只能用 CPU 跑)</code></p>
-<p>在開始前我們要先確保我們有安裝 Anaconda 及 Visual Studio Code，教學中會使用到這兩個東西。</p>
-<h1 id="正式開始"><a href="#正式開始" class="headerlink" title="正式開始"></a>正式開始</h1><h2 id="安裝-Nvidia-驅動程式"><a href="#安裝-Nvidia-驅動程式" class="headerlink" title="安裝 Nvidia 驅動程式"></a>安裝 Nvidia 驅動程式</h2><p>首先我們需要安裝 Nvidia 驅動程式 <a href="https://www.nvidia.com.tw/Download/index.aspx?lang=tw">官方驅動程式 | NVIDIA</a> (選擇你顯卡的版本)，並記下驅動程式的版本。</p>
-<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result1.png" class="">
-
-<h2 id="查看-cuDNN、CUDA與tensorflow-版本關係"><a href="#查看-cuDNN、CUDA與tensorflow-版本關係" class="headerlink" title="查看 cuDNN、CUDA與tensorflow 版本關係"></a>查看 cuDNN、CUDA與tensorflow 版本關係</h2><p>接著我們要查看<a href="https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html">CUDA ToolKit 對應驅動程式版本</a>，可看到我們驅動程式版本幾乎可安裝 CUDA ToolKit 所有的版本。</p>
-<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result2.png" class="">
-
-<p>再來去查看<a href="https://www.tensorflow.org/install/source_windows">cuDNN、CUDA 與 tensorflow 版本關係</a>，我們想安裝 tensorflow 2.5 版，Python 版本必須為3.6-3.9，cuDNN 版本要8.1以上，CUDA ToolKit 版本要11.2以上。</p>
-<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result3.png" class="">
-
-<h2 id="建立虛擬環境"><a href="#建立虛擬環境" class="headerlink" title="建立虛擬環境"></a>建立虛擬環境</h2><p>有了這些資訊後，我們可以先去 Anaconda 建立一個虛擬環境。</p>
-<p>打開 Anaconda Prompt，輸入指令</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda create --name tf2.5 python=3.9 anaconda --yes</span><br></pre></td></tr></table></figure>
-
-<p>建好後可確認是否成功建立</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda env list</span><br></pre></td></tr></table></figure>
-
-<h2 id="安裝-tensorflow-gpu"><a href="#安裝-tensorflow-gpu" class="headerlink" title="安裝 tensorflow-gpu"></a>安裝 tensorflow-gpu</h2><img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result4.png" class="">
-
-<p>接下來要切換到剛建立好的虛擬環境</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda activate tf2.5</span><br></pre></td></tr></table></figure>
-
-<p>若成功切換環境，前面會有 <code>(tf2.5)</code> 的字樣</p>
-<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result5.png" class="">
-
-<p>接著在 tf2.5 的環境下安裝 Tensorflow 2.5 版本</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install tensorflow-gpu=2.5</span><br></pre></td></tr></table></figure>
-
-<p>安裝好後，可確認是否有安裝成功</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda list</span><br></pre></td></tr></table></figure>
-
-<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result6.png" class="">
-
-<p>由於 Anaconda 會順便把相依的 package 一起安裝，所以往上拉可以看到 CUDA ToolKit 及 cuDNN 也會一起安裝好</p>
-<img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result7.png" class="">
-
-<p>若發現 Anaconda 沒有一起安裝好 CUDA ToolKit 及 cuDNN，可從對照表找到對應版本並自行安裝，以下為示範。</p>
-<ul>
-<li><p>於 tf2.5 環境輸入指令來安裝 CUDA ToolKit</p>
-  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install cudatoolkit=11.2</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>於 tf2.5 環境輸入指令來安裝 cuDNN</p>
-  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">conda install cudnn</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="測試安裝是否成功"><a href="#測試安裝是否成功" class="headerlink" title="測試安裝是否成功"></a>測試安裝是否成功</h2><p>皆安裝好後可於 Visual Studio Code 開啟 jupyter 測試是否能找到 GPU 裝置。有兩種方法：</p>
-<ol>
-<li><p>輸入以下指令，若成功抓到 GPU 則會回傳一個 list，若失敗則回傳空的 list</p>
- <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">tf.config.list_physical_devices(<span class="string">&#x27;GPU&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
- <img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result8.png" class="">
-</li>
-<li><p>輸入以下指令，若成功則會顯示下圖</p>
- <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.python.client <span class="keyword">import</span> device_lib</span><br><span class="line"><span class="built_in">print</span>(device_lib.list_local_devices())</span><br></pre></td></tr></table></figure>
-
- <img src="/2024/03/27/%E4%BD%BF%E7%94%A8%20Anaconda%20%E9%80%B2%E8%A1%8C%20Tensorflow%20%E7%92%B0%E5%A2%83%E5%AE%89%E8%A3%9D%E6%B5%81%E7%A8%8B%EF%BC%88Windows%20%E7%B3%BB%E7%B5%B1%EF%BC%8C%E4%BB%A5%20tf%202.5%20%E7%89%88%E7%82%BA%E4%BE%8B%EF%BC%89/result9.png" class="">
-
-<h1 id="題外話"><a href="#題外話" class="headerlink" title="題外話"></a>題外話</h1><p> 當在做深度學習時，運行程式的當下，可打開 <code>cmd</code> 輸入 <code>nvidia-smi</code> 來確認 GPU 的使用情況。</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Tensorflow</category>
-      </categories>
-      <tags>
-        <tag>Tensorflow</tag>
-        <tag>Anaconda</tag>
       </tags>
   </entry>
 </search>
